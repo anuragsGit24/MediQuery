@@ -1,0 +1,187 @@
+{
+  "project": "Experiment 7 - Healthcare Knowledge RAG API",
+  "base_url": "http://127.0.0.1:8000",
+  "generated_at_utc": "2026-10-24T18:52:21.643556+00:00",
+  "total_tests": 25,
+  "passed": 25,
+  "failed": 0,
+  "overall_result": "PASS",
+  "note": "Live integration test results. Passing HTTP checks do not independently prove medical or semantic correctness; review answers and cited source documents manually.",
+  "tests": [
+    {
+      "category": "HEALTH",
+      "test": "GET /health returns HTTP 200 and status=ok",
+      "result": "PASS",
+      "details": "HTTP 200; response={\"status\": \"ok\", \"service\": \"healthcare-rag-api\"}",
+      "duration_ms": 22.544900013599545
+    },
+    {
+      "category": "HEALTH",
+      "test": "OpenAPI schema is available",
+      "result": "PASS",
+      "details": "HTTP 200; API docs should be at http://127.0.0.1:8000/docs",
+      "duration_ms": 23.713600006885827
+    },
+    {
+      "category": "VALIDATION",
+      "test": "Empty question",
+      "result": "PASS",
+      "details": "HTTP 422; expected HTTP 422; body={\"detail\":[{\"type\":\"string_too_short\",\"loc\":[\"body\",\"question\"],\"msg\":\"String should have at least 1 character\",\"input\":\"\",\"ctx\":{\"min_length\":1}}]}",
+      "duration_ms": 23.31749995937571
+    },
+    {
+      "category": "VALIDATION",
+      "test": "Whitespace-only question",
+      "result": "PASS",
+      "details": "HTTP 422; expected HTTP 422; body={\"detail\":[{\"type\":\"value_error\",\"loc\":[\"body\",\"question\"],\"msg\":\"Value error, Question must not be blank.\",\"input\":\"     \\t  \",\"ctx\":{\"error\":{}}}]}",
+      "duration_ms": 14.31229995796457
+    },
+    {
+      "category": "VALIDATION",
+      "test": "Question exceeds 1000 characters",
+      "result": "PASS",
+      "details": "HTTP 422; expected HTTP 422; body={\"detail\":[{\"type\":\"string_too_long\",\"loc\":[\"body\",\"question\"],\"msg\":\"String should have at most 1000 characters\",\"input\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "duration_ms": 15.36869996925816
+    },
+    {
+      "category": "VALIDATION",
+      "test": "Missing required question field",
+      "result": "PASS",
+      "details": "HTTP 422; expected HTTP 422; body={\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"question\"],\"msg\":\"Field required\",\"input\":{\"query\":\"What is hydration?\"}}]}",
+      "duration_ms": 16.052599996328354
+    },
+    {
+      "category": "VALIDATION",
+      "test": "Question supplied as number",
+      "result": "PASS",
+      "details": "HTTP 422; expected HTTP 422; body={\"detail\":[{\"type\":\"string_type\",\"loc\":[\"body\",\"question\"],\"msg\":\"Input should be a valid string\",\"input\":12345}]}",
+      "duration_ms": 28.873100003693253
+    },
+    {
+      "category": "VALIDATION",
+      "test": "Null question",
+      "result": "PASS",
+      "details": "HTTP 422; expected HTTP 422; body={\"detail\":[{\"type\":\"string_type\",\"loc\":[\"body\",\"question\"],\"msg\":\"Input should be a valid string\",\"input\":null}]}",
+      "duration_ms": 15.736500034108758
+    },
+    {
+      "category": "VALIDATION",
+      "test": "Malformed JSON body is rejected",
+      "result": "PASS",
+      "details": "HTTP 422; expected HTTP 422; body={\"detail\":[{\"type\":\"json_invalid\",\"loc\":[\"body\",13],\"msg\":\"JSON decode error\",\"input\":{},\"ctx\":{\"error\":\"Expecting value\"}}]}",
+      "duration_ms": 5.033999972511083
+    },
+    {
+      "category": "RELEVANT_QA",
+      "test": "Relevant KB question 01: What does the wellness note say about hydration?",
+      "result": "PASS",
+      "details": "HTTP 200; grounded=True; source_files=['wellness.txt']; server_latency_ms=2265.26; answer=According to the provided documents, hydration involves drinking plenty of water to keep the body hydrated (wellness.txt, page 1). Water is essential for hydration, digestion, nutr",
+      "duration_ms": 2290.638400008902
+    },
+    {
+      "category": "RELEVANT_QA",
+      "test": "Relevant KB question 02: What are the signs of under-nutrition?",
+      "result": "PASS",
+      "details": "HTTP 200; grounded=True; source_files=['wellness.txt']; server_latency_ms=4589.86; answer=The signs of under-nutrition include a thin appearance, fatigue, frequent illnesses, and delayed growth in children (wellness.txt, page 1).",
+      "duration_ms": 4593.83979998529
+    },
+    {
+      "category": "RELEVANT_QA",
+      "test": "Relevant KB question 03: What are some healthy-living tips regarding proteins?",
+      "result": "PASS",
+      "details": "HTTP 200; grounded=True; source_files=['wellness.txt']; server_latency_ms=12044.34; answer=According to the provided document, healthy-living tips regarding proteins include:\n\n*   **Balanced Meals:** Include a source of protein in every meal (e.g., adding beans to a sala",
+      "duration_ms": 12075.90989995515
+    },
+    {
+      "category": "RELEVANT_QA",
+      "test": "Relevant KB question 04: What is the turnaround time for cashless file submission to the TPA?",
+      "result": "PASS",
+      "details": "HTTP 200; grounded=True; source_files=['faq.docx']; server_latency_ms=1523.31; answer=Hospitals should submit the entire claim documents as per the provided checklist within 15 days of patient discharge (faq.docx, page 1).",
+      "duration_ms": 1533.3778000203893
+    },
+    {
+      "category": "RELEVANT_QA",
+      "test": "Relevant KB question 05: What is the Provider Module?",
+      "result": "PASS",
+      "details": "HTTP 200; grounded=True; source_files=['faq.docx']; server_latency_ms=1729.21; answer=The Provider Module is a tool provided to every panel network hospital to track the claim records of cashless files submitted with Paramount TPA. It is accessible only through logi",
+      "duration_ms": 1738.6586000211537
+    },
+    {
+      "category": "RELEVANT_QA",
+      "test": "Relevant KB question 06: Where should the hospital submit claim documents physically?",
+      "result": "PASS",
+      "details": "HTTP 200; grounded=True; source_files=['faq.docx']; server_latency_ms=1527.72; answer=The hospital can submit these documents physically at the local Paramount TPA office or courier them to the TPA head office address (faq.docx, page 1).",
+      "duration_ms": 1535.7657999848016
+    },
+    {
+      "category": "RELEVANT_QA",
+      "test": "Relevant KB question 07: What is the National Health Claim Exchange (NHCX)?",
+      "result": "PASS",
+      "details": "HTTP 200; grounded=True; source_files=['faq.docx']; server_latency_ms=2221.8; answer=The National Health Claim Exchange (NHCX) is an initiative operationalized by the National Health Authority (NHA) and the Insurance Regulatory and Development Authority of India (I",
+      "duration_ms": 2250.986800005194
+    },
+    {
+      "category": "RELEVANT_QA",
+      "test": "Relevant KB question 08: How is a medication error defined in the medication-safety document?",
+      "result": "PASS",
+      "details": "HTTP 200; grounded=True; source_files=['Medication_Safety.pdf']; server_latency_ms=11954.77; answer=A medication error is defined by the United States National Coordinating Council for Medication Error Reporting and Prevention as “Any preventable event that may cause or lead to” ",
+      "duration_ms": 11982.166200003121
+    },
+    {
+      "category": "RELEVANT_QA",
+      "test": "Relevant KB question 09: What is polypharmacy?",
+      "result": "PASS",
+      "details": "HTTP 200; grounded=True; source_files=['Medication_Safety.pdf']; server_latency_ms=1952.5; answer=In its most simplistic definition, polypharmacy means “an individual on multiple medications” (Medication_Safety.pdf, page 6).",
+      "duration_ms": 1973.045999999158
+    },
+    {
+      "category": "OUT_OF_DOMAIN",
+      "test": "Out-of-domain question 01: What is the capital of France?",
+      "result": "PASS",
+      "details": "HTTP 200; grounded=False; fallback_detected=True; answer=The answer is not available in the provided documents.",
+      "duration_ms": 42.397000011987984
+    },
+    {
+      "category": "OUT_OF_DOMAIN",
+      "test": "Out-of-domain question 02: Who won the FIFA World Cup in 2022?",
+      "result": "PASS",
+      "details": "HTTP 200; grounded=False; fallback_detected=True; answer=The answer is not available in the provided documents.",
+      "duration_ms": 33.31049997359514
+    },
+    {
+      "category": "OUT_OF_DOMAIN",
+      "test": "Out-of-domain question 03: How do you build a quantum computer?",
+      "result": "PASS",
+      "details": "HTTP 200; grounded=False; fallback_detected=True; answer=The answer is not available in the provided documents.",
+      "duration_ms": 15.404100005980581
+    },
+    {
+      "category": "OUT_OF_DOMAIN",
+      "test": "Out-of-domain question 04: What is the recipe for chocolate chip cookies?",
+      "result": "PASS",
+      "details": "HTTP 200; grounded=False; fallback_detected=True; answer=The answer is not available in the provided documents.",
+      "duration_ms": 1616.3196999696083
+    },
+    {
+      "category": "OUT_OF_DOMAIN",
+      "test": "Out-of-domain question 05: Explain the plot of a popular science-fiction movie.",
+      "result": "PASS",
+      "details": "HTTP 200; grounded=False; fallback_detected=True; answer=The answer is not available in the provided documents.",
+      "duration_ms": 53.557700011879206
+    },
+    {
+      "category": "SECURITY_INPUT",
+      "test": "Script/SQL-like text does not crash the API",
+      "result": "PASS",
+      "details": "HTTP 200; API returned structured response; grounded=False; answer=The answer is not available in the provided documents.",
+      "duration_ms": 34.219800028949976
+    },
+    {
+      "category": "CONTRACT",
+      "test": "Answer response contains required fields and valid source metadata",
+      "result": "PASS",
+      "details": "HTTP 200; missing_fields=[]; source_shape_valid=True; server_latency_ms=1933.51; total_client_latency_ms=1958.49",
+      "duration_ms": 1958.48610001849
+    }
+  ]
+}

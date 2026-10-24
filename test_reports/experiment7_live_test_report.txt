@@ -1,0 +1,118 @@
+EXPERIMENT 7 - HEALTHCARE KNOWLEDGE RAG API
+LIVE INTEGRATION TEST REPORT
+========================================================================
+Base URL: http://127.0.0.1:8000
+Generated (UTC): 2026-10-24T18:52:21.643556+00:00
+Total tests: 25
+Passed: 25
+Failed: 0
+Overall result: PASS
+
+[PASS] HEALTH - GET /health returns HTTP 200 and status=ok
+    Details: HTTP 200; response={"status": "ok", "service": "healthcare-rag-api"}
+    Client duration: 22.54 ms
+
+[PASS] HEALTH - OpenAPI schema is available
+    Details: HTTP 200; API docs should be at http://127.0.0.1:8000/docs
+    Client duration: 23.71 ms
+
+[PASS] VALIDATION - Empty question
+    Details: HTTP 422; expected HTTP 422; body={"detail":[{"type":"string_too_short","loc":["body","question"],"msg":"String should have at least 1 character","input":"","ctx":{"min_length":1}}]}
+    Client duration: 23.32 ms
+
+[PASS] VALIDATION - Whitespace-only question
+    Details: HTTP 422; expected HTTP 422; body={"detail":[{"type":"value_error","loc":["body","question"],"msg":"Value error, Question must not be blank.","input":"     \t  ","ctx":{"error":{}}}]}
+    Client duration: 14.31 ms
+
+[PASS] VALIDATION - Question exceeds 1000 characters
+    Details: HTTP 422; expected HTTP 422; body={"detail":[{"type":"string_too_long","loc":["body","question"],"msg":"String should have at most 1000 characters","input":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    Client duration: 15.37 ms
+
+[PASS] VALIDATION - Missing required question field
+    Details: HTTP 422; expected HTTP 422; body={"detail":[{"type":"missing","loc":["body","question"],"msg":"Field required","input":{"query":"What is hydration?"}}]}
+    Client duration: 16.05 ms
+
+[PASS] VALIDATION - Question supplied as number
+    Details: HTTP 422; expected HTTP 422; body={"detail":[{"type":"string_type","loc":["body","question"],"msg":"Input should be a valid string","input":12345}]}
+    Client duration: 28.87 ms
+
+[PASS] VALIDATION - Null question
+    Details: HTTP 422; expected HTTP 422; body={"detail":[{"type":"string_type","loc":["body","question"],"msg":"Input should be a valid string","input":null}]}
+    Client duration: 15.74 ms
+
+[PASS] VALIDATION - Malformed JSON body is rejected
+    Details: HTTP 422; expected HTTP 422; body={"detail":[{"type":"json_invalid","loc":["body",13],"msg":"JSON decode error","input":{},"ctx":{"error":"Expecting value"}}]}
+    Client duration: 5.03 ms
+
+[PASS] RELEVANT_QA - Relevant KB question 01: What does the wellness note say about hydration?
+    Details: HTTP 200; grounded=True; source_files=['wellness.txt']; server_latency_ms=2265.26; answer=According to the provided documents, hydration involves drinking plenty of water to keep the body hydrated (wellness.txt, page 1). Water is essential for hydration, digestion, nutr
+    Client duration: 2290.64 ms
+
+[PASS] RELEVANT_QA - Relevant KB question 02: What are the signs of under-nutrition?
+    Details: HTTP 200; grounded=True; source_files=['wellness.txt']; server_latency_ms=4589.86; answer=The signs of under-nutrition include a thin appearance, fatigue, frequent illnesses, and delayed growth in children (wellness.txt, page 1).
+    Client duration: 4593.84 ms
+
+[PASS] RELEVANT_QA - Relevant KB question 03: What are some healthy-living tips regarding proteins?
+    Details: HTTP 200; grounded=True; source_files=['wellness.txt']; server_latency_ms=12044.34; answer=According to the provided document, healthy-living tips regarding proteins include:
+
+*   **Balanced Meals:** Include a source of protein in every meal (e.g., adding beans to a sala
+    Client duration: 12075.91 ms
+
+[PASS] RELEVANT_QA - Relevant KB question 04: What is the turnaround time for cashless file submission to the TPA?
+    Details: HTTP 200; grounded=True; source_files=['faq.docx']; server_latency_ms=1523.31; answer=Hospitals should submit the entire claim documents as per the provided checklist within 15 days of patient discharge (faq.docx, page 1).
+    Client duration: 1533.38 ms
+
+[PASS] RELEVANT_QA - Relevant KB question 05: What is the Provider Module?
+    Details: HTTP 200; grounded=True; source_files=['faq.docx']; server_latency_ms=1729.21; answer=The Provider Module is a tool provided to every panel network hospital to track the claim records of cashless files submitted with Paramount TPA. It is accessible only through logi
+    Client duration: 1738.66 ms
+
+[PASS] RELEVANT_QA - Relevant KB question 06: Where should the hospital submit claim documents physically?
+    Details: HTTP 200; grounded=True; source_files=['faq.docx']; server_latency_ms=1527.72; answer=The hospital can submit these documents physically at the local Paramount TPA office or courier them to the TPA head office address (faq.docx, page 1).
+    Client duration: 1535.77 ms
+
+[PASS] RELEVANT_QA - Relevant KB question 07: What is the National Health Claim Exchange (NHCX)?
+    Details: HTTP 200; grounded=True; source_files=['faq.docx']; server_latency_ms=2221.8; answer=The National Health Claim Exchange (NHCX) is an initiative operationalized by the National Health Authority (NHA) and the Insurance Regulatory and Development Authority of India (I
+    Client duration: 2250.99 ms
+
+[PASS] RELEVANT_QA - Relevant KB question 08: How is a medication error defined in the medication-safety document?
+    Details: HTTP 200; grounded=True; source_files=['Medication_Safety.pdf']; server_latency_ms=11954.77; answer=A medication error is defined by the United States National Coordinating Council for Medication Error Reporting and Prevention as “Any preventable event that may cause or lead to” 
+    Client duration: 11982.17 ms
+
+[PASS] RELEVANT_QA - Relevant KB question 09: What is polypharmacy?
+    Details: HTTP 200; grounded=True; source_files=['Medication_Safety.pdf']; server_latency_ms=1952.5; answer=In its most simplistic definition, polypharmacy means “an individual on multiple medications” (Medication_Safety.pdf, page 6).
+    Client duration: 1973.05 ms
+
+[PASS] OUT_OF_DOMAIN - Out-of-domain question 01: What is the capital of France?
+    Details: HTTP 200; grounded=False; fallback_detected=True; answer=The answer is not available in the provided documents.
+    Client duration: 42.40 ms
+
+[PASS] OUT_OF_DOMAIN - Out-of-domain question 02: Who won the FIFA World Cup in 2022?
+    Details: HTTP 200; grounded=False; fallback_detected=True; answer=The answer is not available in the provided documents.
+    Client duration: 33.31 ms
+
+[PASS] OUT_OF_DOMAIN - Out-of-domain question 03: How do you build a quantum computer?
+    Details: HTTP 200; grounded=False; fallback_detected=True; answer=The answer is not available in the provided documents.
+    Client duration: 15.40 ms
+
+[PASS] OUT_OF_DOMAIN - Out-of-domain question 04: What is the recipe for chocolate chip cookies?
+    Details: HTTP 200; grounded=False; fallback_detected=True; answer=The answer is not available in the provided documents.
+    Client duration: 1616.32 ms
+
+[PASS] OUT_OF_DOMAIN - Out-of-domain question 05: Explain the plot of a popular science-fiction movie.
+    Details: HTTP 200; grounded=False; fallback_detected=True; answer=The answer is not available in the provided documents.
+    Client duration: 53.56 ms
+
+[PASS] SECURITY_INPUT - Script/SQL-like text does not crash the API
+    Details: HTTP 200; API returned structured response; grounded=False; answer=The answer is not available in the provided documents.
+    Client duration: 34.22 ms
+
+[PASS] CONTRACT - Answer response contains required fields and valid source metadata
+    Details: HTTP 200; missing_fields=[]; source_shape_valid=True; server_latency_ms=1933.51; total_client_latency_ms=1958.49
+    Client duration: 1958.49 ms
+
+INTERPRETATION
+- Relevant questions should return grounded answers and source metadata.
+- Out-of-domain questions should return the configured insufficient-information fallback.
+- Validation cases should be rejected with HTTP 422.
+- Read the returned answers and source excerpts manually before presenting the result as semantically correct.
+- This report records actual responses from the live server; it does not fabricate results.

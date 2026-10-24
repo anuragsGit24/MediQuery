@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+langchain-community
+langchain-text-splitters
+langchain-huggingface
+sentence-transformers
+chromadb
+pypdf
+docx2txt
+google-genai
+httpx
+pytest
+requests
